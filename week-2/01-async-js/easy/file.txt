@@ -1,0 +1,8 @@
+hello program this is me dra       vid from cliappend test
+
+new append test
+
+123           45           6
+hello     world    my    name   is       raman
+ 
+hello program this is me dra vid from cliappend test new append test 123 45 6 hello world my name is raman 
