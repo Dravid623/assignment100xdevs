@@ -6,7 +6,7 @@ const router = Router();
 // Admin Routes
 router.post('/signup', (req, res) => {
     // Implement admin signup logic
-    const newUser = new Admin({username: req.body.username, password: req.body.password});
+    new Admin({username: req.body.username, password: req.body.password}).save();
     res.json({
         message: 'Admin created successfully'
     })
