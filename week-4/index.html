@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script>
+    let globalId = 1;
+    let todoState = [];
+    let oldTodoState = [];
+
+    function addTodoToDom() {
+       const parentElement = document.getElementById('todos');
+       parentElement.innerHTML = ""
+      todoState.forEach(element => {
+        const h1Element = document.createElement("h1");
+        h1Element.innerHTML = element.title;
+        parentElement.appendChild(h1Element);
+
+        const h5Element = document.createElement("h5");
+        h5Element.innerHTML = element.description;
+        parentElement.appendChild(h5Element);
+
+        const updateButton = document.createElement("button")
+        updateButton.innerHTML = "Update"
+        updateButton.setAttribute("id",element.id)
+        updateButton.addEventListener("click", function () {
+          const todoId = this.getAttribute("id")
+          console.log(todoId)
+        })
+        parentElement.appendChild(updateButton)
+
+        const deleteButton = document.createElement("button")
+        deleteButton.innerHTML = "Delete"
+        parentElement.appendChild(deleteButton)
+      });
+    }
+
+    function removeTodoFromDom(todo) {
+        const parentElement = document.getElementById('todos');
+      const todoElements = parentElement.children;
+
+      for (let i = 0; i < todoElements.length; i++) {
+        const h1Element = todoElements[i].querySelector('h1');
+        if (h1Element && h1Element.innerHTML === todo.title) {
+          parentElement.removeChild(todoElements[i]);
+          break;
+        }
+      }
+    }
+
+    function updateTodoInDom(oldTodo, newTodo) {
+        removeTodoFromDom(oldTodo); // Remove the old todo
+      addTodoToDom(); // Add the updated todo
+    }
+
+    function updateState(newTodos) {
+      // calculate the diff b/w newTodos and oldTodos.
+      // More specifically, find out what todos are - 
+      // 1. added
+      // 2. deleted
+      // 3. updated
+      const added = [];
+      const deleted = [];
+      const updated = [];
+      // calculate these 3 arrays
+      // call addTodo, removeTodo, updateTodo functions on each of the
+      // elements
+      for(let i=0; i<newTodos.length; i++){
+        found = false;
+        for(let j=0; j<oldTodoState.length; j++){
+          if(newTodos[i].id === oldTodoState[j].id){
+            
+            // update
+            if(JSON.stringify(newTodos[i]) !== JSON.stringify(oldTodoState[j])){
+              updated.push(newTodos[i])
+              found = true;
+            }
+            break;
+          }
+        }
+        if(!found){
+          added.push(newTodos[i])
+          
+        }
+      }
+
+      // Identify deleted todos
+      for (let j = 0; j < oldTodoState.length; j++) {
+        let found = false;
+
+        for (let i = 0; i < newTodos.length; i++) {
+          if (oldTodoState[j].id === newTodos[i].id) {
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          deleted.push(oldTodoState[j]);
+        }
+      }
+      // Perform actions based on added, deleted, and updated arrays
+      added.forEach(addTodoToDom);
+      deleted.forEach(removeTodoFromDom);
+      updated.forEach(todo => updateTodoInDom(todo, newTodos.find(t => t.id === todo.id)));
+
+      oldTodoState = newTodos;
+    }
+
+    function addTodo() {
+      const title = document.getElementById("title").value;
+      const description = document.getElementById("description").value;
+      todoState.push({
+        title: title,
+        description: description,
+        id: globalId++,
+      })
+      updateState(todoState);
+    }
+
+    function deleteTodo(id){
+      for(let i=0; i<oldTodoState.length; i++){
+        if(oldTodoState[i].id === id){
+          
+        }
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <input type="text" id="title" placeholder="Todo title"></input> <br /><br />
+  <input type="text" id="description" placeholder="Todo description"></input> <br /><br />
+  <button onclick="addTodo()">Add todo</button>
+  <br /> <br />
+
+  <div id="todos">
+
+  </div>
+</body>
+
+</html>
